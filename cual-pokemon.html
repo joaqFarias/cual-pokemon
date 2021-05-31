@@ -19,24 +19,51 @@
 
         /* mis estilos */
         img {
-            border-radius:5%;
+            border-radius: 5%;
             border-style: solid;
             border-color: chocolate;
         }
 
+        .imagenes {
+            border-style: solid;
+            border-color:#2f4f4f;
+            overflow-y: scroll;
+        }
+        .container-info{
+            text-align: center;
+        }
     </style>
 
 </head>
 
 <body>
 
-
-    <div class="row m-2">
-        <div class="col-md mx-1 my-1">
-
+    <div class="container">
+        <div class="row m-5">
+            <div class="col-md-7 imagenes me-5 mb-5 py-2"></div>
+            <div class="col-md-4 info ms-2">
+                <div class="row container-info py-4">
+                    <dic class="col-md">
+                        <div class="row nombre">
+                            <div class="col-md"></div>
+                        </div>
+                        <div class="row foto">
+                            <div class="col-md"></div>
+                        </div>
+                        <div class="row tipo">
+                            <div class="col-md"></div>
+                        </div>
+                        <div class="row altura">
+                            <div class="col-md"></div>
+                        </div>
+                        <div class="row peso">
+                            <div class="col-md"></div>
+                        </div>
+                </div>
+            </div>
         </div>
     </div>
-
+    </div>
 
 
     <!-- DESDE ACA SOLO SCRIPT -->
@@ -50,8 +77,47 @@
     <script>
         // TU CODIGO:
         for (i = 1; i < 152; i++) {
-            $(".col-md").append(`<img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/${i}.png">`)
+            $(".imagenes").append(`<img data-num="${i}" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/${i}.png" alt="pokemon ${i}">`);
         }
+
+        $(".imagenes").css("overflow-y", "scroll");
+        $(".imagenes").css("height", "20em");
+
+        $(".container").on("click", ".imagenes img", function () {
+
+            let num = $(this).attr("data-num");
+            let foto = $(this).attr("src");
+            $.get(`https://pokeapi.co/api/v2/pokemon/${num}/`,
+                function (poke_data) {
+                    // diseño del contendor de la info del pokemon
+                    $(".container-info").css("border-radius", "5%");
+                    $(".container-info").css("border-style", "solid");
+                    $(".container-info").css("border-color", "#2f4f4f");
+
+                    if ($(".info .nombre .col-md").html() == "") {
+                        $(".nombre .col-md").append(`<h2>${poke_data.name}</h2>`);
+                        $(".foto .col-md").append(`<img src="${foto}">`);
+                        $(".tipo .col-md").append(`<b>Tipo:</b> ${poke_data.types[0].type.name}`);
+                        $(".altura .col-md").append(`<b>Altura:</b>  ${poke_data.height} m`);
+                        $(".peso .col-md").append(`<b>Peso:</b>  ${poke_data.weight} kg`);
+                    }
+                    else {
+                        $(".nombre .col-md").html("");
+                        $(".foto .col-md").html("");
+                        $(".tipo .col-md").html("");
+                        $(".altura .col-md").html("");
+                        $(".peso .col-md").html("");
+
+                        $(".nombre .col-md").append(`<h2>${poke_data.name}</h2>`);
+                        $(".foto .col-md").append(`<img src="${foto}">`);
+                        $(".tipo .col-md").append(`<b>Tipo:</b>  ${poke_data.types[0].type.name}`);
+                        $(".altura .col-md").append(`<b>Altura:</b>  ${poke_data.height} m`);
+                        $(".peso .col-md").append(`<b>Peso:</b>  ${poke_data.weight} kg`);
+                    }
+
+                }, "json");
+
+        })
     </script>
 </body>
 
